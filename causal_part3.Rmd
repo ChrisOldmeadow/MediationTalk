@@ -1,0 +1,235 @@
+---
+title: "Mediation"
+subtitle: "<br><span style = 'font-size: 50%;'> Part 4 of Summary of the Harvard Workshop on Causal Modelling</span>"
+author: "Chris Oldmeadow"
+institute: "CReDITSS, HMRI"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: ["default", "fonts.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+library(knitr)
+#knitr::opts_chunk$set(cache = TRUE, warning = FALSE, message = FALSE, dpi = 180)
+library(ggplot2)
+#library(silgelib)
+library(emo)
+library(dagitty)
+library(ggdag)
+
+```
+
+
+
+# Mediation
+
+.pull-left[
+```{r, echo=FALSE}
+dagified <- dagify( Y ~ A+ M,
+                    M ~ A,
+                   exposure = "A",
+                   outcome = "Y")
+
+ggdag(tidy_dagitty(dagified), layout = "circle") +
+  theme_dag()
+```
+]
+.pull-right[
+
+* .blue[Indirect effect] of A on Y through M
+* .blue[Direct effect] of A on Y (effect that is not through M)
+]
+
+---
+
+# Standard approach (The difference method)
+
+* Total effect:
+$E[Y|A=a,C=c] = \alpha_0 + \alpha_1A + ...$
+
+* Indirect effect:
+ $E[Y|A=a,C=c,M=m] = \beta_0 +\beta_1A + ...$
+
+
+ Direct effect = Total effect - Indierct effect
+ 
+ 
+---
+ 
+ 
+# Problem 1: Mediator outcome confounding
+
+
+```{r, echo=FALSE}
+dag <- dagify( Y ~ A + M + C1 + U,
+                    A ~ C1,
+                    M ~ A + U,
+                   exposure = "A",
+                   outcome = "Y")
+
+dag %>% ggdag_dseparated(from = "A", to = "Y",controlling_for = c("M", "C1"),  text = TRUE, collider_lines = FALSE) +
+#  geom_dag_collider_edges() +
+  theme_dag() + scale_adjusted()
+
+```
+
+
+---
+
+# Problem 2 Exposure mediator interactions
+
+When interaction we would have 2 direct effects (one for each level of the mediator), so it isnt clear how to then work out the indirect effect
+
+
+
+---
+# Counterfactual framework for mediation
+
+## Some definitions
+
+- Y_a: counterfafctual outocme when exposure (A) is set to level a
+- M_a: be the coutnerfactual value of the mediator when  exposure (A) is set to level a
+- Y_{am}: counterfactual outcome when intervening to set A to a and M to m
+
+
+
+---
+
+# Controlled Direct effect (CDE)
+
+
+CDE : The difference in counterfactual outocmes when A=1 compared to A=0, when M is fixed at m
+
+$CDE = Y_{1m} - Y_{0m}$
+
+---
+
+# Natural Direct Effect (NDE)
+
+NDE: The effect of comparing treatment level A=1 to A=0, when intervengin to fix M=M0
+
+$NDE = Y_{1M_0} - Y_{0M_0}$
+
+M0: fix the level of the mediator to what it naturally would have  been had the person did not have the Exposure
+
+
+___
+
+# Natural Indirect Effect (NIE)
+
+
+NIE: The effect of comparing M=M_1 vs M=M_0 when  intervening to fix A=1
+
+$NIE = Y_{1M_1} - Y_{1M_0}$
+
+
+
+
+---
+
+# Properties of  Direct and Indirect effects
+
+Total effect = NIE + NDE
+
+
+$Y_1 - Y_0 = Y_{1M_1}- Y_{0M_0}$
+
+
+---
+
+# Identification: Parametric regression equations
+
+
+
+
+- $E[CDE(m)|c] = E[Y|A=1,m,c] - E[Y|A=0,m,c]$
+
+- $E[NDE|c] = \Sigma_m \{E[Y|A=1,m,c]-E[Y|A=0,m,c]\}P(M=m|A=0,c)$
+
+
+- $E[NIE|c] = \Sigma_m E[Y|A=1,m,c] \{P(M=m|A=1,c)-P(M=m|A=0,c)\}$
+
+
+* Fit a regression model for Y, Fit a regression model for M then compute analytically
+
+
+
+---
+# Monte Carlo Simulation
+
+* For each bootstrap sample:
+
+1. Fit model for M and Y
+
+2. For each treatment level (eg A=0 and 1):
+  - simulate a value for M
+  - simulate a value for Y conditional on M and the value for A
+  -average over these
+  
+  
+Confidence intervals taken from the percentiles form the bootstrapped samples
+
+---
+
+# Assumptions
+
+
+1. No umeasured exposure-outcome confounders
+2. No unmeasured mediator outocme confounders
+3. No unmeasured exposure-mediator confounders
+4. There is no mediaotr-outcome confounder that is affected by exposure
+
+
+.footnote[
+[1] CDE only requires assumptions 1-2.
+]
+
+
+
+
+
+
+---
+# Study Design
+
+
+
+* Best to have 3 waves of data:
+
+
+Exposure -> Mediator -> Outcome
+
+
+
+Baseline values of the mediator and outocme can be controlled for as confounders
+
+* CAn use cross-sectional data, provided the causal relationships are established
+
+* If there are many waves of data, there are more advanced methods that can deal wiht this
+
+
+.footnote[
+[1] Slides created via the R package [**xaringan**](https://github.com/yihui/xaringan).
+]
+
+
+
+
+
+---
+# Sensitivity analysis
+
+
+* Too often in RCT's, no thought gos in to measuring all known mediator-outocme confounders
+* Sensitivity analysis can help here
+
+
+* E-value = RR + sqrt(RR*(RR-1)).
+
+The minimum confounding risk ratio (RR_{UY} and RR_{AU}) that would explain away any effect and its CI
