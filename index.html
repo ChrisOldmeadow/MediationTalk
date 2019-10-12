@@ -37,6 +37,26 @@ class: center, middle, inverse, title-slide
 ]
 
 ---
+# Study Design
+
+
+
+* Best to have 3 waves of data:
+
+
+Exposure -&gt; Mediator -&gt; Outcome
+
+
+
+Baseline values of the mediator and outocme can be controlled for as confounders
+
+* Can use cross-sectional data, provided the causal relationships are established
+
+* If there are many waves of data, there are more advanced methods that can deal with this
+
+
+
+---
 
 # Standard approach (The difference method)
 
@@ -51,22 +71,26 @@ class: center, middle, inverse, title-slide
  
  
 ---
- 
+class: center, inverse , middle
  
 # Problem 1: Mediator outcome confounding
 
 
-&lt;img src="index_files/figure-html/unnamed-chunk-2-1.png" width="504" /&gt;
+
 
 ---
 ## Adjusting for M creates collider stratification bias
 
-&lt;img src="index_files/figure-html/unnamed-chunk-3-1.png" width="504" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-2-1.png" width="504" /&gt;
 
 
 ---
+class: center, inverse , middle
+ 
+# Problem 2: Exposure-mediator interactions
 
-# Problem 2 Exposure mediator interactions
+
+???
 
 When interaction we would have 2 direct effects (one for each level of the mediator), so it isnt clear how to then work out the indirect effect
 
@@ -178,18 +202,25 @@ Confidence intervals taken from the percentiles form the bootstrapped samples
 
 ---
 
-# Assumptions
+# Assumptions&lt;sup&gt;1,2&lt;/sup&gt;
 
 .content-box-blue[
 1. No umeasured exposure-outcome confounders
-2. No unmeasured mediator outocme confounders
+2. No unmeasured mediator-outocme confounders
 3. No unmeasured exposure-mediator confounders
-4. There is no mediaotr-outcome confounder that is affected by exposure
+4. **There is no mediator-outcome confounder that is affected by exposure**
 ]
 
 .footnote[
 [1] CDE only requires assumptions 1-2.
+[2] Randomisation ensures 1 and 3 hold.
 ]
+
+
+---
+## How do we deal with L?
+&lt;img src="index_files/figure-html/unnamed-chunk-3-1.png" width="504" /&gt;
+
 
 ---
 # Comparison to traditional methods
@@ -202,29 +233,6 @@ Confidence intervals taken from the percentiles form the bootstrapped samples
 
 
 
----
-# Study Design
-
-
-
-* Best to have 3 waves of data:
-
-
-Exposure -&gt; Mediator -&gt; Outcome
-
-
-
-Baseline values of the mediator and outocme can be controlled for as confounders
-
-* CAn use cross-sectional data, provided the causal relationships are established
-
-* If there are many waves of data, there are more advanced methods that can deal wiht this
-
-
-.footnote[
-[1] Slides created via the R package [**xaringan**](https://github.com/yihui/xaringan).
-]
-
 
 
 
@@ -233,13 +241,26 @@ Baseline values of the mediator and outocme can be controlled for as confounders
 # Sensitivity analysis
 
 
-* Too often in RCT's, no thought gos in to measuring all known mediator-outocme confounders
-* Sensitivity analysis can help here
+
 
 
 * E-value = RR + sqrt(RR*(RR-1)).
 
-The minimum confounding risk ratio (RR_{UY} and RR_{AU}) that would explain away any effect and its CI
+The minimum confounding risk ratio (RR_{UY} and RR_{AU}) that would explain away any effect and its
+CI
+
+???
+* Too often in RCT's, no thought goes in to measuring all known mediator-outcome confounders
+* Sensitivity analysis can help here
+
+---
+class: center, middle, inverse
+
+# Thanks
+
+
+  [**Slides**](https://chrisoldmeadow.github.io/MediationTalk/#1) created via the R package [**xaringan**](https://github.com/yihui/xaringan).
+ DAGs created via the R packages [**Dagitty**](https://github.com/jtextor/dagitty)  and [**ggdag**](https://github.com/malcolmbarrett/ggdag)
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
