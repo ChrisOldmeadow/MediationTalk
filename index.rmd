@@ -30,25 +30,45 @@ library(ggdag)
 # Mediation
 
 .pull-left[
-```{r, echo=FALSE}
-  ggdag_mediation_triangle(x = NULL, y = NULL, m = NULL,
-                           x_y_associated = TRUE, edge_type = "link_arc", node_size = 16,
-                           text_size = 3.88, label_size = text_size, text_col = "white",
-                           label_col = text_col, node = TRUE, stylized = FALSE, text = TRUE,
-                           use_labels = NULL) +
-    theme_dag()
+```{r, echo=FALSE, fig.retina=3}
+pos <- list(x=c(A=0, Y= 1),
+            y =c(A=0,  Y = 0))
+
+dag <- dagify( Y ~ A,
+                 coords = pos)  
+dag %>%
+  
+  tidy_dagitty() %>%
+  ggplot(aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_edges() +
+  geom_dag_point() +
+  geom_dag_text() +
+  theme_dag()
 ```
 ]
 .pull-right[
 
-* .blue[Indirect effect] of A on Y through M
-* .blue[Direct effect] of A on Y (effect that is not through M)
+```{r, echo=FALSE, fig.retina=3}
+pos <- list(x=c(A=0, M= 1 , Y= 2),
+            y =c(A=0, M=1, Y = 0))
+
+dag <- dagify( Y ~ A+  M ,
+                      M ~ A ,
+                 coords = pos,
+                     exposure = "A",
+                     outcome = "Y")  
+dag %>%
+  
+  tidy_dagitty() %>%
+  ggplot(aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_edges() +
+  geom_dag_point() +
+  geom_dag_text() +
+  theme_dag()
+```
 ]
 
----
-# Study Design
-
-
+???
 
 * Best to have 3 waves of data:
 
@@ -63,6 +83,33 @@ Baseline values of the mediator and outocme can be controlled for as confounders
 
 * If there are many waves of data, there are more advanced methods that can deal with this
 
+---
+class: center
+```{r, echo=FALSE, fig.retina=3}
+pos <- list(x=c(A=0, M= 1 , Y= 2),
+            y =c(A=0, M=1, Y = 0))
+
+dag <- dagify( Y ~ A+  M ,
+                      M ~ A ,
+                 coords = pos,
+                     exposure = "A",
+                     outcome = "Y")
+
+dag %>%
+  tidy_dagitty() %>%
+  dag_paths(from = "A", to = "Y", node_size = 20) %>%
+  ggplot(aes(x = x, y = y, xend = xend, yend = yend, colour = path)) +
+  geom_dag_edges(aes(edge_alpha = as.numeric(as.factor(path)), edge_colour = as.numeric(as.factor(path)))) +
+  ggplot2::facet_wrap(~factor(set,levels = c("1","2"), labels =c("Indirect","Direct") ))+
+  geom_dag_point(show.legend = FALSE) +
+  geom_dag_text(col = "white") +
+  theme_dag()
+
+
+```
+
+* .blue[(1) Indirect effect] of A on Y through M
+* .blue[(2) Direct effect] of A on Y (effect that is not through M)
 
 
 ---
@@ -139,19 +186,25 @@ When interaction we would have 2 direct effects (one for each level of the media
 # Controlled Direct effect (CDE)
 
 
-.content-box-blue[ CDE : The difference in counterfactual outcomes when $A=1$ compared to $A=0$, when $M$ is fixed at $m$]
+.blue[CDE: ]The difference in counterfactual outcomes when $A=1$ compared to $A=0$, when $M$ is fixed at $m$]
 
-$CDE = Y_{1m} - Y_{0m}$
+
+$$E[CDE(m)|c] = E[Y|A=1,m,c] - E[Y|A=0,m,c]$$
 
 ---
 
 # Natural Direct Effect (NDE)
 
-.content-box-blue[ NDE: The effect of comparing treatment level $A=1$ to $A=0$, when intervening to fix $M=M_0$]
+ .blue[NDE:] The effect of comparing treatment level $A=1$ to $A=0$, when intervening to fix $M=M_0$
 
-$NDE = Y_{1M_0} - Y_{0M_0}$
 
-.content-box-green[ $M_0$: fix the level of the mediator to what it naturally would have  been had the person did not have the exposure]
+
+$$E[NDE|C] = E[Y_{1,M_0}- Y_{0,M_0}|C]$$
+
+$$=\Sigma_m \{E[Y|A=1,m,c]-E[Y|A=0,m,c]\}P(M=m|A=0,c)$$ 
+
+
+
 
 ???
 
@@ -159,37 +212,42 @@ The NDE captures the effect of the exposure if we could disable the path through
 
 Mediator set to the value it would have been in the abscence of the exposure, c/w CDE where the mediator is fixed at the same value for everybody eg a policy
 
-___
+---
 
 # Natural Indirect Effect (NIE)
 
 
-.content-box-blue[ NIE: The effect of comparing $M=M_1$ vs $M=M_0$ when  intervening to fix $A=1$]
+.blue[NIE:] The effect of comparing $M=M_1$ vs $M=M_0$ when  intervening to fix $A=1$]
 
-$NIE = Y_{1M_1} - Y_{1M_0}$
+
+
+$$E[NIE|C] = E[Y_{1,M_1} - Y_{1,M_0}|C]$$
+$$= \Sigma_m E[Y|A=1,m,c] \{P(M=m|A=1,c)-P(M=m|A=0,c)\}$$
+
+
+
+
 
 
 ???
 The NIE caputes the effect of the exposure on the outcome by changing the mediator
+What change would occur to the outcome
+if one changes the mediator from the value that would be realized
+under the control condition, Mi(0), to the value that would be observed
+under the treatment condition, Mi(1), while holding the treatment
+status at t
+
 
 ---
 # Proportion mediated
 
+.content-box-blue[Total effect = NIE + NDE]
 
 PM = NIE/TE
 
 
 * is imprecise (ie wide confidence intervals)
 * USe the CI for the NIE to decide if there is any mediation occuring
-
----
-
-# Properties of  Direct and Indirect effects
-
-Total effect = NIE + NDE
-
-
-$Y_1 - Y_0 = Y_{1M_1}- Y_{0M_0}$
 
 
 ---
@@ -198,25 +256,23 @@ $Y_1 - Y_0 = Y_{1M_1}- Y_{0M_0}$
 
 
 
+* Fit a regression model  $E[Y|A,M,C] = \theta_0 + \theta_1a + \theta_2m + \theta_3am + \beta_3c$
+* Fit a regression model $E[M|A,C] = \beta_0 + \beta_1a + \beta_2c$ 
+* compute analytically
 
-- $E[CDE(m)|c] = E[Y|A=1,m,c] - E[Y|A=0,m,c]$
+---
+# Analytic soutions
 
-- $E[NDE|c] = \Sigma_m \{E[Y|A=1,m,c]-E[Y|A=0,m,c]\}P(M=m|A=0,c)$
-
-
-- $E[NIE|c] = \Sigma_m E[Y|A=1,m,c] \{P(M=m|A=1,c)-P(M=m|A=0,c)\}$
-
-
-* Fit a regression model for Y, Fit a regression model for M then compute analytically
-
-
+$CDE = \theta_1 + \theta_3m (a-a^{\star})$
+$NDE = \theta_1 + \theta_3(\beta_0+\beta_1a^{\star} + \beta_3c) (a-a^{\star})$
+$NIE = \theta_2*\beta_1 + \theta_3*\beta_1a(a-a^{\star})$
 
 ---
 # Monte Carlo Simulation
 
-* For each bootstrap sample:
 
-1. Fit model for M and Y
+
+1. Fit model for M|A,C and Y|M,A,C
 
 2. For each treatment level (eg A=0 and 1):
   - simulate a value for M
@@ -244,7 +300,10 @@ Confidence intervals taken from the percentiles form the bootstrapped samples
 
 
 ---
-## How do we deal with L?
+## How do we deal with L when trying to estimate the CDE?
+
+
+.pull-left[
 ```{r, echo=FALSE, fig.retina=3}
 pos <- list(x=c(A=0, C1 = 0.25, M= 1, U = 2, Y= 2, L = 0.5),
             y =c(A=0, C1 = 0.75, M=1, U = 0.75, Y = 0, L=0.5))
@@ -267,21 +326,36 @@ pos <- list(x=c(A=0, C1 = 0.25, M= 1, U = 2, Y= 2, L = 0.5),
     scale_adjusted()
 
 ```
+]
+
+
+.pull-right[
+
+- Do we control for L `r emo::ji("doubt")`
+{{content}}
+]
+--
+- If we dont then confounding bias `r emo::ji("scream")`
+
+{{content}}
+
+--
+- if we do then we eliminate some of the effect of A through pathways other than M   `r emo::ji("scream")`
+
+{{content}}
+--
+- Seem familiar??
 
 
 ---
-# Comparison to traditional methods
 
+# Marginal Structural Model for mediation
 
-* Provided all confounders are accounted for, they will agree, accept when there is Exposure-MEdiator interaction.
+- Weight for p(A|C)
 
-* Fine to drop the interaction term if its magnitude is small, otehrwise include it
+- weight for p(M|A,C,L)
 
-
-
-
-
-
+- overall weight = 
 
 
 ---
