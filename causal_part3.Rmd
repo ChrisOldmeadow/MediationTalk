@@ -6,14 +6,14 @@ institute: "CReDITSS, HMRI"
 date: "`r Sys.Date()`"
 output:
   xaringan::moon_reader:
-    css: ["default", "fonts.css"]
+    css: ["default", "fonts.css", "custom.css"]
     lib_dir: libs
     nature:
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
 ---
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, fig.retina = 3}
 options(htmltools.dir.version = FALSE)
 library(knitr)
 #knitr::opts_chunk$set(cache = TRUE, warning = FALSE, message = FALSE, dpi = 180)
@@ -66,7 +66,7 @@ $E[Y|A=a,C=c] = \alpha_0 + \alpha_1A + ...$
 # Problem 1: Mediator outcome confounding
 
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, fig.retina = 3}
 dag <- dagify( Y ~ A + M + C1 + U,
                     A ~ C1,
                     M ~ A + U,
@@ -93,9 +93,10 @@ When interaction we would have 2 direct effects (one for each level of the media
 
 ## Some definitions
 
-- Y_a: counterfafctual outocme when exposure (A) is set to level a
-- M_a: be the coutnerfactual value of the mediator when  exposure (A) is set to level a
-- Y_{am}: counterfactual outcome when intervening to set A to a and M to m
+.content-box-blue[ 
+- $Y_a$: counterfafctual outocme when exposure $A$ is set to level $a$
+- $M_a$: be the coutnerfactual value of the mediator when  exposure $A$ is set to level $a$
+- $Y_{am}$: counterfactual outcome when intervening to set $A$ to $a$ and $M$ to $m$]
 
 
 
@@ -104,7 +105,7 @@ When interaction we would have 2 direct effects (one for each level of the media
 # Controlled Direct effect (CDE)
 
 
-CDE : The difference in counterfactual outocmes when A=1 compared to A=0, when M is fixed at m
+.content-box-blue[ CDE : The difference in counterfactual outocmes when $A=1$ compared to $A=0$, when $M$ is fixed at $m$]
 
 $CDE = Y_{1m} - Y_{0m}$
 
@@ -112,24 +113,40 @@ $CDE = Y_{1m} - Y_{0m}$
 
 # Natural Direct Effect (NDE)
 
-NDE: The effect of comparing treatment level A=1 to A=0, when intervengin to fix M=M0
+.content-box-blue[ NDE: The effect of comparing treatment level $A=1$ to $A=0$, when intervening to fix $M=M_0$]
 
 $NDE = Y_{1M_0} - Y_{0M_0}$
 
-M0: fix the level of the mediator to what it naturally would have  been had the person did not have the Exposure
+.content-box-green[ M0: fix the level of the mediator to what it naturally would have  been had the person did not have the exposure]
 
+???
+
+The NDE captures the effect of the exposure if we could disable the path through the mediator
+
+Mediator set to the value it would have been in the abscence of the exposure, c/w CDE where the mediator is fixed at the same value for everybody eg a policy
 
 ___
 
 # Natural Indirect Effect (NIE)
 
 
-NIE: The effect of comparing M=M_1 vs M=M_0 when  intervening to fix A=1
+.content-box-blue[ NIE: The effect of comparing $M=M_1$ vs $M=M_0$ when  intervening to fix $A=1$]
 
 $NIE = Y_{1M_1} - Y_{1M_0}$
 
 
+???
+The NIE caputes the effect of the exposure on the outcome by changing the mediator
 
+---
+# Proportion mediated
+
+
+PM = NIE/TE
+
+
+* is imprecise (ie wide confidence intervals)
+* USe the CI for the NIE to decide if there is any mediaiton occuring
 
 ---
 
@@ -190,7 +207,13 @@ Confidence intervals taken from the percentiles form the bootstrapped samples
 [1] CDE only requires assumptions 1-2.
 ]
 
+---
+# Comparison to traditional methods
 
+
+* Provided all confounders are accounted for, they will agree, accept when there is Exposure-MEdiator interaction.
+
+* Fine to drop the interaction term if its magnitude is small, otehrwise include it
 
 
 

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Mediation</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Chris Oldmeadow" />
+    <meta name="date" content="2019-10-12" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="fonts.css" type="text/css" />
+    <link rel="stylesheet" href="custom.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Mediation
+## <br><span style="font-size: 50%;"> Part 4 of Summary of the Harvard Workshop on Causal Modelling</span>
+### Chris Oldmeadow
+### CReDITSS, HMRI
+### 2019-10-12
+
+---
+
+
+
+
+
+# Mediation
+
+.pull-left[
+![](causal_part3_files/figure-html/unnamed-chunk-1-1.png)&lt;!-- --&gt;
+]
+.pull-right[
+
+* .blue[Indirect effect] of A on Y through M
+* .blue[Direct effect] of A on Y (effect that is not through M)
+]
+
+---
+
+# Standard approach (The difference method)
+
+* Total effect:
+`\(E[Y|A=a,C=c] = \alpha_0 + \alpha_1A + ...\)`
+
+* Indirect effect:
+ `\(E[Y|A=a,C=c,M=m] = \beta_0 +\beta_1A + ...\)`
+
+
+ Direct effect = Total effect - Indierct effect
+ 
+ 
+---
+ 
+ 
+# Problem 1: Mediator outcome confounding
+
+
+&lt;img src="causal_part3_files/figure-html/unnamed-chunk-2-1.png" width="504" /&gt;
+
+
+---
+
+# Problem 2 Exposure mediator interactions
+
+When interaction we would have 2 direct effects (one for each level of the mediator), so it isnt clear how to then work out the indirect effect
+
+
+
+---
+# Counterfactual framework for mediation
+
+## Some definitions
+
+.content-box-blue[ 
+- `\(Y_a\)`: counterfafctual outocme when exposure `\(A\)` is set to level `\(a\)`
+- `\(M_a\)`: be the coutnerfactual value of the mediator when  exposure `\(A\)` is set to level `\(a\)`
+- `\(Y_{am}\)`: counterfactual outcome when intervening to set `\(A\)` to `\(a\)` and `\(M\)` to `\(m\)`]
+
+
+
+---
+
+# Controlled Direct effect (CDE)
+
+
+.content-box-blue[ CDE : The difference in counterfactual outocmes when `\(A=1\)` compared to `\(A=0\)`, when `\(M\)` is fixed at `\(m\)`]
+
+`\(CDE = Y_{1m} - Y_{0m}\)`
+
+---
+
+# Natural Direct Effect (NDE)
+
+.content-box-blue[ NDE: The effect of comparing treatment level `\(A=1\)` to `\(A=0\)`, when intervening to fix `\(M=M_0\)`]
+
+`\(NDE = Y_{1M_0} - Y_{0M_0}\)`
+
+.content-box-green[ M0: fix the level of the mediator to what it naturally would have  been had the person did not have the exposure]
+
+???
+
+The NDE captures the effect of the exposure if we could disable the path through the mediator
+
+Mediator set to the value it would have been in the abscence of the exposure, c/w CDE where the mediator is fixed at the same value for everybody eg a policy
+
+___
+
+# Natural Indirect Effect (NIE)
+
+
+.content-box-blue[ NIE: The effect of comparing `\(M=M_1\)` vs `\(M=M_0\)` when  intervening to fix `\(A=1\)`]
+
+`\(NIE = Y_{1M_1} - Y_{1M_0}\)`
+
+
+???
+The NIE caputes the effect of the exposure on the outcome by changing the mediator
+
+---
+# Proportion mediated
+
+
+PM = NIE/TE
+
+
+* is imprecise (ie wide confidence intervals)
+* USe the CI for the NIE to decide if there is any mediaiton occuring
+
+---
+
+# Properties of  Direct and Indirect effects
+
+Total effect = NIE + NDE
+
+
+`\(Y_1 - Y_0 = Y_{1M_1}- Y_{0M_0}\)`
+
+
+---
+
+# Identification: Parametric regression equations
+
+
+
+
+- `\(E[CDE(m)|c] = E[Y|A=1,m,c] - E[Y|A=0,m,c]\)`
+
+- `\(E[NDE|c] = \Sigma_m \{E[Y|A=1,m,c]-E[Y|A=0,m,c]\}P(M=m|A=0,c)\)`
+
+
+- `\(E[NIE|c] = \Sigma_m E[Y|A=1,m,c] \{P(M=m|A=1,c)-P(M=m|A=0,c)\}\)`
+
+
+* Fit a regression model for Y, Fit a regression model for M then compute analytically
+
+
+
+---
+# Monte Carlo Simulation
+
+* For each bootstrap sample:
+
+1. Fit model for M and Y
+
+2. For each treatment level (eg A=0 and 1):
+  - simulate a value for M
+  - simulate a value for Y conditional on M and the value for A
+  -average over these
+  
+  
+Confidence intervals taken from the percentiles form the bootstrapped samples
+
+---
+
+# Assumptions
+
+
+1. No umeasured exposure-outcome confounders
+2. No unmeasured mediator outocme confounders
+3. No unmeasured exposure-mediator confounders
+4. There is no mediaotr-outcome confounder that is affected by exposure
+
+
+.footnote[
+[1] CDE only requires assumptions 1-2.
+]
+
+---
+# Comparison to traditional methods
+
+
+* Provided all confounders are accounted for, they will agree, accept when there is Exposure-MEdiator interaction.
+
+* Fine to drop the interaction term if its magnitude is small, otehrwise include it
+
+
+
+
+---
+# Study Design
+
+
+
+* Best to have 3 waves of data:
+
+
+Exposure -&gt; Mediator -&gt; Outcome
+
+
+
+Baseline values of the mediator and outocme can be controlled for as confounders
+
+* CAn use cross-sectional data, provided the causal relationships are established
+
+* If there are many waves of data, there are more advanced methods that can deal wiht this
+
+
+.footnote[
+[1] Slides created via the R package [**xaringan**](https://github.com/yihui/xaringan).
+]
+
+
+
+
+
+---
+# Sensitivity analysis
+
+
+* Too often in RCT's, no thought gos in to measuring all known mediator-outocme confounders
+* Sensitivity analysis can help here
+
+
+* E-value = RR + sqrt(RR*(RR-1)).
+
+The minimum confounding risk ratio (RR_{UY} and RR_{AU}) that would explain away any effect and its CI
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
