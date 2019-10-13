@@ -84,8 +84,8 @@ Baseline values of the mediator and outocme can be controlled for as confounders
 * If there are many waves of data, there are more advanced methods that can deal with this
 
 ---
-class: center
-```{r, echo=FALSE, fig.retina=3}
+
+```{r, echo=FALSE, fig.retina=3, fig.align='center'}
 pos <- list(x=c(A=0, M= 1 , Y= 2),
             y =c(A=0, M=1, Y = 0))
 
@@ -137,7 +137,7 @@ class: center, inverse , middle
 ---
 ## Adjusting for M creates collider stratification bias
 
-```{r, echo=FALSE, fig.retina = 3}
+```{r, echo=FALSE, fig.retina = 3, fig.align='center'}
 
 pos <- list(x=c(A=0, C1 = 0.125, M= 0.5, U = 1, Y= 1),
             y =c(A=0, C1 = 0.375, M=0.5, U = 0.375, Y = 0))
@@ -175,18 +175,41 @@ When interaction we would have 2 direct effects (one for each level of the media
 ## Some definitions
 
 .content-box-blue[ 
-- $Y_a$: counterfafctual outocme when exposure $A$ is set to level $a$
-- $M_a$: be the coutnerfactual value of the mediator when  exposure $A$ is set to level $a$
-- $Y_{am}$: counterfactual outcome when intervening to set $A$ to $a$ and $M$ to $m$]
+- $Y_a$: counterfactual **outcome** when exposure $A$ is set to level $a$
+- $M_a$: be the counterfactual value of the **mediator** when  exposure $A$ is set to level $a$
+- $Y_{am}$: counterfactual outcome when exposure $A$ is set to $a$ and $M$ to $m$]
 
 
 
+
+---
+class: middle, center
+# Total effect
+
+$$Y_{1M_1} - Y_{0M_0}$$
+---
+## Nested counterfactuals
+
+$$Y_{aM_a*}$$
+
+
+For example: 
+$$Y_{0M_1}$$ 
+The counterfactual outcome had you not recieved the treatment, but mediator at the counterfactual value it would have been had you recieved treatment.
+
+
+
+| A | M | Y | $M_0$ | $M_1$ | $Y_{0M_0}$ | $Y_{1M_1}$ | $Y_{0M_1}$ | $Y_{1M_0}$ |
+|---|---|---|-----|-----|---------|---------|---------|---------|
+| 0 | 0 | 1 |  0  |     |    1    |         |         |         |
+| 1 | 0 | 1 |     | 0   |         |     0   |         |         |
+| 1 | 1 | 0 |     | 1   |         |     0   |         |         |
 ---
 
 # Controlled Direct effect (CDE)
 
 
-.blue[CDE: ]The difference in counterfactual outcomes when $A=1$ compared to $A=0$, when $M$ is fixed at $m$]
+.content-box-blue[The difference in counterfactual outcomes when $A=1$ compared to $A=0$, when $M$ is fixed at $m$]
 
 
 $$E[CDE(m)|c] = E[Y|A=1,m,c] - E[Y|A=0,m,c]$$
@@ -195,7 +218,7 @@ $$E[CDE(m)|c] = E[Y|A=1,m,c] - E[Y|A=0,m,c]$$
 
 # Natural Direct Effect (NDE)
 
- .blue[NDE:] The effect of comparing treatment level $A=1$ to $A=0$, when intervening to fix $M=M_0$
+.content-box-blue[Changing the treatment, but fixing the mediator  at whatever level it would be had you not changed the treatment]
 
 
 
@@ -208,16 +231,20 @@ $$=\Sigma_m \{E[Y|A=1,m,c]-E[Y|A=0,m,c]\}P(M=m|A=0,c)$$
 
 ???
 
+is the effect you see by changing the mediator, as if you had changed the treatment without actually changing the treatment itself.
+
 The NDE captures the effect of the exposure if we could disable the path through the mediator
 
-Mediator set to the value it would have been in the abscence of the exposure, c/w CDE where the mediator is fixed at the same value for everybody eg a policy
+, c/w CDE where the mediator is fixed at the same value for everybody eg a policy
 
 ---
 
 # Natural Indirect Effect (NIE)
 
 
-.blue[NIE:] The effect of comparing $M=M_1$ vs $M=M_0$ when  intervening to fix $A=1$]
+.content-box-blue[Fixing the treatment, the effect you see by changing the mediator, as if you had changed the treatment without actually changing the treatment itself]
+
+
 
 
 
@@ -263,20 +290,20 @@ PM = NIE/TE
 ---
 # Analytic soutions
 
-$CDE = \theta_1 + \theta_3m (a-a^{\star})$
-$NDE = \theta_1 + \theta_3(\beta_0+\beta_1a^{\star} + \beta_3c) (a-a^{\star})$
-$NIE = \theta_2*\beta_1 + \theta_3*\beta_1a(a-a^{\star})$
+- $CDE = \theta_1 + \theta_3m (a-a^{\star})$
+- $NDE = \theta_1 + \theta_3(\beta_0+\beta_1a^{\star} + \beta_3c) (a-a^{\star})$
+- $NIE = \theta_2\times\beta_1 + \theta_3\times\beta_1a(a-a^{\star})$
 
 ---
-# Monte Carlo Simulation
+# Monte Carlo Simulation (Very similar to chained regression equations for MI)
 
 
 
-1. Fit model for M|A,C and Y|M,A,C
+1. Fit model for M|A,C and Y|M,A,C using observed data
 
 2. For each treatment level (eg A=0 and 1):
-  - simulate a value for M
-  - simulate a value for Y conditional on M and the value for A
+  - simulate the potential values for M|A
+  - simulate the potential values for Y conditional on M and the value for A
   -average over these
   
   
