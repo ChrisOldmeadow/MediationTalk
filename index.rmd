@@ -77,7 +77,7 @@ Exposure -> Mediator -> Outcome
 
 
 
-Baseline values of the mediator and outocme can be controlled for as confounders
+Baseline values of the mediator and outcome can be controlled for as confounders
 
 * Can use cross-sectional data, provided the causal relationships are established
 
@@ -123,7 +123,7 @@ $E[Y|A=a,C=c] = \alpha_0 + \alpha_1A + ...$
  $E[Y|A=a,C=c,M=m] = \beta_0 +\beta_1A + ...$
 
 
- Direct effect = Total effect - Indierct effect
+ Direct effect = Total effect - Indirect effect
  
  
 ---
@@ -195,7 +195,7 @@ $$Y_{aM_a*}$$
 
 For example: 
 $$Y_{0M_1}$$ 
-The counterfactual outcome had you not recieved the treatment, but mediator at the counterfactual value it would have been had you recieved treatment.
+The counterfactual outcome had you not received the treatment, but mediator at the counterfactual value it would have been had you received treatment.
 
 
 
@@ -257,7 +257,7 @@ $$= \Sigma_m E[Y|A=1,m,c] \{P(M=m|A=1,c)-P(M=m|A=0,c)\}$$
 
 
 ???
-The NIE caputes the effect of the exposure on the outcome by changing the mediator
+The NIE captures the effect of the exposure on the outcome by changing the mediator
 What change would occur to the outcome
 if one changes the mediator from the value that would be realized
 under the control condition, Mi(0), to the value that would be observed
@@ -274,7 +274,7 @@ PM = NIE/TE
 
 
 * is imprecise (ie wide confidence intervals)
-* USe the CI for the NIE to decide if there is any mediation occuring
+* Use the CI for the NIE to decide if there is any mediation occurring
 
 
 ---
@@ -288,7 +288,7 @@ PM = NIE/TE
 * compute analytically
 
 ---
-# Analytic soutions
+# Analytic solutions
 
 - $CDE = \theta_1 + \theta_3m (a-a^{\star})$
 - $NDE = \theta_1 + \theta_3(\beta_0+\beta_1a^{\star} + \beta_3c) (a-a^{\star})$
@@ -314,8 +314,8 @@ Confidence intervals taken from the percentiles form the bootstrapped samples
 # Assumptions<sup>1,2</sup>
 
 .content-box-blue[
-1. No umeasured exposure-outcome confounders
-2. No unmeasured mediator-outocme confounders
+1. No unmeasured exposure-outcome confounders
+2. No unmeasured mediator-outcome confounders
 3. No unmeasured exposure-mediator confounders
 4. **There is no mediator-outcome confounder that is affected by exposure**
 ]
