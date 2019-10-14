@@ -4,7 +4,7 @@
     <title>Mediation</title>
     <meta charset="utf-8" />
     <meta name="author" content="Chris Oldmeadow" />
-    <meta name="date" content="2019-10-13" />
+    <meta name="date" content="2019-10-14" />
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link rel="stylesheet" href="fonts.css" type="text/css" />
     <link rel="stylesheet" href="custom.css" type="text/css" />
@@ -17,7 +17,7 @@ class: center, middle, inverse, title-slide
 ## <br><span style="font-size: 50%;"> Part 4 of Summary of the Harvard Workshop on Causal Modelling</span>
 ### Chris Oldmeadow
 ### CReDITSS, HMRI
-### 2019-10-13
+### 2019-10-14
 
 ---
 
@@ -44,7 +44,7 @@ Exposure -&gt; Mediator -&gt; Outcome
 
 
 
-Baseline values of the mediator and outocme can be controlled for as confounders
+Baseline values of the mediator and outcome can be controlled for as confounders
 
 * Can use cross-sectional data, provided the causal relationships are established
 
@@ -69,7 +69,7 @@ Baseline values of the mediator and outocme can be controlled for as confounders
  `\(E[Y|A=a,C=c,M=m] = \beta_0 +\beta_1A + ...\)`
 
 
- Direct effect = Total effect - Indierct effect
+ Direct effect = Total effect - Indirect effect
  
  
 ---
@@ -124,7 +124,7 @@ class: middle, center
 
 For example: 
 `$$Y_{0M_1}$$` 
-The counterfactual outcome had you not recieved the treatment, but mediator at the counterfactual value it would have been had you recieved treatment.
+The counterfactual outcome had you not received the treatment, but mediator at the counterfactual value it would have been had you received treatment.
 
 
 
@@ -186,7 +186,7 @@ The NDE captures the effect of the exposure if we could disable the path through
 
 
 ???
-The NIE caputes the effect of the exposure on the outcome by changing the mediator
+The NIE captures the effect of the exposure on the outcome by changing the mediator
 What change would occur to the outcome
 if one changes the mediator from the value that would be realized
 under the control condition, Mi(0), to the value that would be observed
@@ -203,7 +203,7 @@ PM = NIE/TE
 
 
 * is imprecise (ie wide confidence intervals)
-* USe the CI for the NIE to decide if there is any mediation occuring
+* Use the CI for the NIE to decide if there is any mediation occurring
 
 
 ---
@@ -217,7 +217,7 @@ PM = NIE/TE
 * compute analytically
 
 ---
-# Analytic soutions
+# Analytic solutions
 
 - `\(CDE = \theta_1 + \theta_3m (a-a^{\star})\)`
 - `\(NDE = \theta_1 + \theta_3(\beta_0+\beta_1a^{\star} + \beta_3c) (a-a^{\star})\)`
@@ -243,8 +243,8 @@ Confidence intervals taken from the percentiles form the bootstrapped samples
 # Assumptions&lt;sup&gt;1,2&lt;/sup&gt;
 
 .content-box-blue[
-1. No umeasured exposure-outcome confounders
-2. No unmeasured mediator-outocme confounders
+1. No unmeasured exposure-outcome confounders
+2. No unmeasured mediator-outcome confounders
 3. No unmeasured exposure-mediator confounders
 4. **There is no mediator-outcome confounder that is affected by exposure**
 ]
